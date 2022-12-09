@@ -341,6 +341,7 @@
             <!-- 一定要有這組DIV -->
             <a href="">獨家熱銷$1111安心好眠組</a>
         </div>
+        <!-- 產品圖片 -->
         <img src="images/product.png" alt="">
       </div>
       <!-- 內容end -->
@@ -358,10 +359,10 @@
     .lightBox .remaining {font-size:60px;color: #fff;font-weight: bold;text-align: left;justify-content: center;align-self: flex-end; width: 100%; margin: 10px 0 25px 0;}
     .lightBox .time{position: relative;}
     .lightBox .Timer{margin-bottom: 0;}
-    .lightBox .day::after{content: '天';color: #fff;position: absolute;top: 100%;right: 0;font-size: 14px;transform: translateY(-8px);}
-    .lightBox .hour::after{content: '時';color: #fff;position: absolute;top: 100%;right: 0;font-size: 14px;transform: translateY(-8px);}
-    .lightBox .min::after{content: '分';color: #fff;position: absolute;top: 100%;right: 0;font-size: 14px;transform: translateY(-8px);}
-    .lightBox .sec::after{content: '秒';color: #fff;position: absolute;top: 100%;right: 0;font-size: 14px;transform: translateY(-8px);}
+    .lightBox .day::after{content: '天';color: #fff;position: absolute;top: 100%;right: 0;font-size: 14px;transform: translateY(-6px);}
+    .lightBox .hour::after{content: '時';color: #fff;position: absolute;top: 100%;right: 0;font-size: 14px;transform: translateY(-6px);}
+    .lightBox .min::after{content: '分';color: #fff;position: absolute;top: 100%;right: 0;font-size: 14px;transform: translateY(-6px);}
+    .lightBox .sec::after{content: '秒';color: #fff;position: absolute;top: 100%;right: 0;font-size: 14px;transform: translateY(-6px);}
 
     @media(max-width:950px) {
       .lightBox .lightContent {width: 90%;}
@@ -379,7 +380,7 @@
       .lightBox .remaining p {font-size: 36px;  display: block;  margin:10px 0;text-align: center;}
     }
     @media(max-width:350px){
-      .lightBox .lightContent {position: static;width: 90%;height: 90%;}
+      .lightBox .lightContent {width: 90%;max-height: 90%;min-height: 50%;}
       .lightBox .remaining p{font-size: 30px;}
     }
 
