@@ -315,7 +315,7 @@
   <!-- data-expiryDate請在雙引號中 按照格式填入倒數日期，西元年/月份/日期 -->
   <!-- data-expiryTime請在雙引號中 按照格式填入倒數時間，24小時/分鐘/秒數 -->
   <!-- data-openInMin請在雙引號中 按照格式填入頁面閒置時間(分鐘數)，如不需要此功能 請移除 data-openInMin="1"  -->
-  <div id="lightBox" class="lightBox" data-expiryDate="2022/12/09" data-expiryTime="23:59:15" data-openInMin="1">
+   <div id="lightBox" class="lightBox" data-expiryDate="2022/12/18" data-expiryTime="23:59:15" data-openInMin="1">
     <div class="lightContent">
       <a href="" class="closeLight" id="closeLight" onClick="closeLight">X</a>
       <!-- 內容head -->
@@ -323,25 +323,18 @@
         <div>
           <h2>雙11香氛療癒慶</h2>
           <p>滿1111現折250，再贈購物金250
-            <br>
-            滿額福 加碼贈 香氛貼片、洗沐旅行組
-            <br>
-            滿額福 加碼贈 香氛貼片、洗沐旅行組
-            <br>
-            滿額福 加碼贈 香氛貼片、洗沐旅行組
-            <br>
-            滿額福 加碼贈 香氛貼片、洗沐旅行組
-            <br>
-            滿額福 加碼贈 香氛貼片、洗沐旅行組
+            <br>滿額福 加碼贈 香氛貼片、洗沐旅行組
+            <br>滿額福 加碼贈 香氛貼片、洗沐旅行組
+            <br>滿額福 加碼贈 香氛貼片、洗沐旅行組
+            <br>滿額福 加碼贈 香氛貼片、洗沐旅行組
+            <br>滿額福 加碼贈 香氛貼片、洗沐旅行組
           </p>
             <!-- 一定要有這組DIV -->
-            <div class="remaining">
-              <p id="Timer" class="Timer"></p>
-            </div>
+            <div class="remaining"><p id="Timer" class="Timer"></p></div>
             <!-- 一定要有這組DIV -->
             <a href="">獨家熱銷$1111安心好眠組</a>
         </div>
-        <!-- 產品圖片 -->
+<!-- 商品圖片img -->
         <img src="images/product.png" alt="">
       </div>
       <!-- 內容end -->
@@ -383,7 +376,7 @@
       .lightBox .lightContent {width: 90%;max-height: 90%;min-height: 50%;}
       .lightBox .remaining p{font-size: 30px;}
     }
-
+ 
     /* 背景圖片換這裡  */
     .lightBox .lightContent {background: url(images/bkg.jpg)no-repeat;background-size: 100% 100%;}
 
@@ -421,126 +414,138 @@
 
   <!-- js -->
   <script>
-    var lightbox = document.getElementById('lightBox')
-    var bodyelement = document.body
+      var lightbox = document.getElementById('lightBox')
 
-    // 閒置計時器裝置
-    var timingLightBox
-    var maxTime = lightbox.dataset.openinmin * 60
-    var time = maxTime
+      // 閒置計時器裝置
+      var timingLightBox
+      var maxTime = lightbox.dataset.openinmin * 60
+      var time = maxTime
 
-    window.onload = function () {
-      var targetTime = new Date(lightbox.dataset.expirydate+' '+lightbox.dataset.expirytime).getTime();
-      var todayTime = new Date().getTime();
-      var allDaysGap = (targetTime - todayTime) / (24 * 60 * 60 * 1000)
-      var daysGap = Math.floor(allDaysGap)
-      var allHoursGap = (allDaysGap - daysGap) * 24
-      var hoursGap = Math.floor(allHoursGap)
-      var allMinsGap = (allHoursGap - hoursGap) * 60
-      var minsGap = Math.floor((allHoursGap - hoursGap) * 60)
-      var secondsGap = Math.floor((allMinsGap - minsGap) * 60)
-      if (daysGap >= 0 && hoursGap >= 0 && minsGap >= 0 && secondsGap > 0) {
-        if (daysGap < 10) { daysGap = '0'+daysGap }
-        if (hoursGap < 10) { hoursGap = '0'+hoursGap }
-        if (minsGap < 10) { minsGap = '0'+minsGap }
-        if (secondsGap < 10) { secondsGap = '0'+secondsGap }
-        document.getElementById('Timer').innerHTML = '<span class="time day">'+daysGap+'</span> : <span class="time hour">'+hoursGap+'</span> : <span class="time min">'+minsGap+'</span> : <span class="time sec">'+secondsGap+'</span>'
-        timerSwitch = setInterval(countDownTime, 1000);  // 啟動計時器
-        openLightBox()  // 打開燈箱
-        if (lightbox.dataset.openinmin) {  // 判斷有無寫入時間，有則執行
-          userActionAddEvent()
-        }
-      } else {
-        document.body.classList.remove("wrapbkg")
-        lightbox.classList.remove('open')
+      console.log(document.referrer)
+      console.log(localStorage.getItem('prev_history'))
+
+      window.onload = function () {
+          if(document.referrer !== null && localStorage.getItem('prev_history') === document.referrer){
+              time = maxTime
+              openTimingLightBox()
+              localStorage.setItem('prev_history', window.location.href)
+          } else {
+              init();
+              localStorage.setItem('prev_history', window.location.href)
+          }
       }
-    }
 
-    function openLightBox() {
-      var haveClassName = document.body.getAttribute('class')
-      if(!(haveClassName)){
-        haveClassName = ''
+      function init() {
+          var targetTime = new Date(lightbox.dataset.expirydate + ' ' + lightbox.dataset.expirytime).getTime();
+          var todayTime = new Date().getTime();
+          var allDaysGap = (targetTime - todayTime) / (24 * 60 * 60 * 1000)
+          var daysGap = Math.floor(allDaysGap)
+          var allHoursGap = (allDaysGap - daysGap) * 24
+          var hoursGap = Math.floor(allHoursGap)
+          var allMinsGap = (allHoursGap - hoursGap) * 60
+          var minsGap = Math.floor((allHoursGap - hoursGap) * 60)
+          var secondsGap = Math.floor((allMinsGap - minsGap) * 60)
+          if (daysGap >= 0 && hoursGap >= 0 && minsGap >= 0 && secondsGap > 0) {
+              if (daysGap < 10) { daysGap = '0' + daysGap }
+              if (hoursGap < 10) { hoursGap = '0' + hoursGap }
+              if (minsGap < 10) { minsGap = '0' + minsGap }
+              if (secondsGap < 10) { secondsGap = '0' + secondsGap }
+              document.getElementById('Timer').innerHTML = '<span class="time day">' + daysGap + '</span> : <span class="time hour">' + hoursGap + '</span> : <span class="time min">' + minsGap + '</span> : <span class="time sec">' + secondsGap + '</span>'
+              timerSwitch = setInterval(countDownTime, 1000);  // 啟動計時器
+              openLightBox()  // 打開燈箱
+              if (lightbox.dataset.openinmin) {  // 判斷有無寫入時間，有則執行
+                  userActionAddEvent()
+              }
+          } else {
+              document.body.classList.remove("wrapbkg")
+              lightbox.classList.remove('open')
+          }
       }
-      document.body.setAttribute('class', haveClassName+'wrapbkg')
-      lightbox.setAttribute('class', 'lightBox open')
-    }
 
-    function userActionAddEvent() {
-      if (!document.body.classList.contains('wrapbkg')) {
-        openTimingLightBox()
+      function openLightBox() {
+          var haveClassName = document.body.getAttribute('class')
+          if (!(haveClassName)) {
+              haveClassName = ''
+          }
+          document.body.setAttribute('class', haveClassName + 'wrapbkg')
+          lightbox.setAttribute('class', 'lightBox open')
       }
-    }
 
-    // 重複計時
-    function openTimingLightBox(openLightTime) {
-      // 換算重複時間要多久
-      timingLightBox = setInterval(function () {
-        time--
-        if (time <= 0) {
-          openLightBox()
-          clearInterval(timingLightBox)
-        }
-      }, 1000)
-    }
-
-    // 倒數計時器
-    function countDownTime() {
-      var targetTime = new Date(lightbox.dataset.expirydate+' '+lightbox.dataset.expirytime).getTime();
-      var todayTime = new Date().getTime();
-      var allDaysGap = (targetTime - todayTime) / (24 * 60 * 60 * 1000)
-      var daysGap = Math.floor(allDaysGap)
-      var allHoursGap = (allDaysGap - daysGap) * 24
-      var hoursGap = Math.floor(allHoursGap)
-      var allMinsGap = (allHoursGap - hoursGap) * 60
-      var minsGap = Math.floor((allHoursGap - hoursGap) * 60)
-      var secondsGap = Math.floor((allMinsGap - minsGap) * 60)
-
-      // 倒數畫面用
-      if (daysGap >= 0 && hoursGap >= 0 && minsGap >= 0 && secondsGap >= 0) {
-        if (daysGap < 10) { daysGap = '0'+daysGap }
-        if (hoursGap < 10) { hoursGap = '0'+hoursGap }
-        if (minsGap < 10) { minsGap = '0'+minsGap }
-        if (secondsGap < 10) { secondsGap = '0'+secondsGap }
-        document.getElementById('Timer').innerHTML = '<span class="time day">'+daysGap+'</span> : <span class="time hour">'+hoursGap+'</span> : <span class="time min">'+minsGap+'</span> : <span class="time sec">'+secondsGap+'</span>'
-      } else {
-        document.body.classList.remove("wrapbkg")
-        lightbox.classList.remove('open')
-        clearInterval(timerSwitch);
+      function userActionAddEvent() {
+          if (!document.body.classList.contains('wrapbkg')) {
+              openTimingLightBox() //打開計時器
+          }
       }
-    }
 
-    // 關閉事件
-    function closeLightBox(e) {
-      e.preventDefault();
-      document.body.classList.remove("wrapbkg")
-      lightbox.classList.remove('open')
-
-      time = maxTime; // Reset
-      openTimingLightBox()
-    }
-
-    // 監聽 關閉燈箱
-    document.body.addEventListener('click', function (e) {
-      if(e.target.className == 'lightBox open'){
-        closeLightBox(e)
+      // 重複計時
+      function openTimingLightBox(openLightTime) {
+          // 換算重複時間要多久
+          timingLightBox = setInterval(function () {
+              time--
+              if (time <= 0) {
+                  openLightBox()
+                  clearInterval(timingLightBox)
+              }
+          }, 1000)
       }
-    }, false)
 
-    // 監聽 關閉燈箱
-    document.getElementById('closeLight').addEventListener('click', function (e) {
-      closeLightBox(e)
-    }, false)
+      // 倒數計時器
+      function countDownTime() {
+          var targetTime = new Date(lightbox.dataset.expirydate + ' ' + lightbox.dataset.expirytime).getTime();
+          var todayTime = new Date().getTime();
+          var allDaysGap = (targetTime - todayTime) / (24 * 60 * 60 * 1000)
+          var daysGap = Math.floor(allDaysGap)
+          var allHoursGap = (allDaysGap - daysGap) * 24
+          var hoursGap = Math.floor(allHoursGap)
+          var allMinsGap = (allHoursGap - hoursGap) * 60
+          var minsGap = Math.floor((allHoursGap - hoursGap) * 60)
+          var secondsGap = Math.floor((allMinsGap - minsGap) * 60)
 
-    // 監聽 reset閒置計時器
-    document.addEventListener('mousemove', function () {
-      time = maxTime; // Reset
-    }, false);
-    document.addEventListener('keydown', function () {
-      time = maxTime; // Reset
-    }, false);
-    document.addEventListener('mousedown', function () {
-      time = maxTime; // Reset
-    }, false);
+          // 倒數畫面用
+          if (daysGap >= 0 && hoursGap >= 0 && minsGap >= 0 && secondsGap >= 0) {
+              if (daysGap < 10) { daysGap = '0' + daysGap }
+              if (hoursGap < 10) { hoursGap = '0' + hoursGap }
+              if (minsGap < 10) { minsGap = '0' + minsGap }
+              if (secondsGap < 10) { secondsGap = '0' + secondsGap }
+              document.getElementById('Timer').innerHTML = '<span class="time day">' + daysGap + '</span> : <span class="time hour">' + hoursGap + '</span> : <span class="time min">' + minsGap + '</span> : <span class="time sec">' + secondsGap + '</span>'
+          } else {
+              document.body.classList.remove("wrapbkg")
+              lightbox.classList.remove('open')
+              clearInterval(timerSwitch);
+          }
+      }
+
+      // 關閉事件
+      function closeLightBox(e) {
+          e.preventDefault();
+          document.body.classList.remove("wrapbkg")
+          lightbox.classList.remove('open')
+          time = maxTime; // Reset
+          openTimingLightBox()
+      }
+
+      // 監聽 關閉燈箱
+      document.body.addEventListener('click', function (e) {
+          if (e.target.className == 'lightBox open') {
+              closeLightBox(e)
+          }
+      }, false)
+
+      // 監聽 關閉燈箱
+      document.getElementById('closeLight').addEventListener('click', function (e) {
+          closeLightBox(e)
+      }, false)
+
+      // 監聽 reset閒置計時器
+      document.addEventListener('mousemove', function () {
+          time = maxTime; // Reset
+      }, false);
+      document.addEventListener('keydown', function () {
+          time = maxTime; // Reset
+      }, false);
+      document.addEventListener('mousedown', function () {
+          time = maxTime; // Reset
+      }, false);
   </script>
   <!-- js -->
 </body>
