@@ -532,7 +532,7 @@
                 font-size: 30px;
             }
         }
-
+ 
         /* 背景圖片換這裡  */
         .lightBox .lightContent {
             background: url(images/bkg.jpg)no-repeat;
@@ -655,10 +655,10 @@
     <script>
         var lightbox = document.getElementById('lightBox')
 
-        // 閒置計時器裝置
-        var timingLightBox
-        var maxTime = lightbox.dataset.openinmin * 60
-        var time = maxTime
+          // 閒置計時器裝置
+          var timingLightBox
+          var maxTime = lightbox.dataset.openinmin * 60
+          var time = maxTime
 
         console.log('document: '+document.referrer)
         console.log('localStorage: '+localStorage.getItem('prev_history'))
@@ -783,17 +783,17 @@
             }
         }
 
-        // 監聽 點擊灰色區塊關閉燈箱
-        document.body.addEventListener('click', function (e) {
-            if (e.target.className == 'lightBox open') {
-                closeLightBox(e)
-            }
-        }, false)
+          // 監聽 點擊灰色區塊關閉燈箱
+          document.body.addEventListener('click', function (e) {
+                if  (e.target.className == 'lightBox open')  {
+                      closeLightBox(e)
+                }
+          }, false)
 
-        // 監聽 點擊叉叉關閉燈箱
-        document.getElementById('closeLight').addEventListener('click', function (e) {
-            closeLightBox(e)
-        }, false)
+          // 監聽 點擊叉叉關閉燈箱
+          document.getElementById('closeLight').addEventListener('click', function (e) {
+                closeLightBox(e)
+          }, false)
 
         // 監聽 reset閒置計時器
         document.addEventListener('mousemove', function () {
