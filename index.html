@@ -675,8 +675,8 @@
 
 
 
-        const promise = new Promise(function(resolve, reject) {
-            let value = localStorage.getItem('final')
+        var promise = new Promise(function(resolve, reject) {
+            var value = localStorage.getItem('final')
             localStorage.setItem('final', window.location.href)
             resolve(value)
             reject(reason)
