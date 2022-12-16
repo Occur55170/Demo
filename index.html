@@ -317,7 +317,7 @@
     <!-- data-expiryDate請在雙引號中 按照格式填入倒數日期，西元年/月份/日期 -->
     <!-- data-expiryTime請在雙引號中 按照格式填入倒數時間，24小時/分鐘/秒數 -->
     <!-- data-openInMin請在雙引號中 按照格式填入頁面閒置時間(分鐘數)，如不需要此功能 請移除 data-openInMin="1"  -->
-    <div id="lightBox" class="lightBox" data-expiryDate="2022/12/31" data-expiryTime="10:28:10" data-openInMin="1">
+    <div id="lightBox" class="lightBox" data-expiryDate="2022/12/31" data-expiryTime="23:59:59" data-openInMin="1">
         <div class="lightContent">
             <a href="" class="closeLight" id="closeLight" onClick="closeLight">X</a>
             <!-- 內容head -->
@@ -653,23 +653,31 @@
 
     <!-- js -->
     <script>
-        var lightbox = document.getElementById('lightBox')
+       var lightbox = document.getElementById('lightBox')
 
         // 閒置計時器裝置
         var timingLightBox
         var maxTime = lightbox.dataset.openinmin * 60
         var time = maxTime
-
         if (document.referrer !== '' && localStorage.getItem('prev_history') === document.referrer) {
             localStorage.setItem('prev_history', window.location.href)
-            init()
+            init(false)
         } else {
             localStorage.setItem('prev_history', window.location.href)
-            init()
+            init(true)
         }
+        // if (document.referrer !== '' && localStorage.getItem('prev_history') === document.referrer) {
+        //     localStorage.setItem('prev_history', window.location.href)
+        //     time = maxTime
+        //     openTimingLightBox()
+        // } else {
+        //     localStorage.setItem('prev_history', window.location.href)
+        //     init()
+        // }
+
 
         // 第一次執行function
-        function init() {
+        function init(value) {
             var targetTime = new Date(lightbox.dataset.expirydate + ' ' + lightbox.dataset.expirytime).getTime()
             var todayTime = new Date().getTime()
             var allDaysGap = (targetTime - todayTime) / (24 * 60 * 60 * 1000)
@@ -680,13 +688,15 @@
             var minsGap = Math.floor((allHoursGap - hoursGap) * 60)
             var secondsGap = Math.floor((allMinsGap - minsGap) * 60)
             if (daysGap >= 0 && hoursGap >= 0 && minsGap >= 0 && secondsGap > 0) {
-                if (daysGap < 10) { daysGap = '0' + daysGap }
-                if (hoursGap < 10) { hoursGap = '0' + hoursGap }
-                if (minsGap < 10) { minsGap = '0' + minsGap }
-                if (secondsGap < 10) { secondsGap = '0' + secondsGap }
-                document.getElementById('Timer').innerHTML = '<span class="time day">' + daysGap + '</span> : <span class="time hour">' + hoursGap + '</span> : <span class="time min">' + minsGap + '</span> : <span class="time sec">' + secondsGap + '</span>'
                 timerSwitch = setInterval(countDownTime, 1000);  // 啟動計時器
-                openLightBox()  // 打開燈箱
+                if(value){
+                    openLightBox()  // 打開燈箱
+                } else {
+                    time = maxTime; // Reset
+                    if (lightbox.dataset.openinmin) {  // 判斷有無寫入閒置時間且現在是否為燈箱開啟的狀態
+                        openTimingLightBox() //打開閒置計時器
+                    }
+                }
             } else {
                 console.log("time's up")
             }
@@ -702,8 +712,8 @@
         }
         // 倒數計時器
         function countDownTime() {
-            var targetTime = new Date(lightbox.dataset.expirydate + ' ' + lightbox.dataset.expirytime).getTime();
-            var todayTime = new Date().getTime();
+            var targetTime = new Date(lightbox.dataset.expirydate + ' ' + lightbox.dataset.expirytime).getTime()
+            var todayTime = new Date().getTime()
             var allDaysGap = (targetTime - todayTime) / (24 * 60 * 60 * 1000)
             var daysGap = Math.floor(allDaysGap)
             var allHoursGap = (allDaysGap - daysGap) * 24
@@ -740,7 +750,7 @@
         // 關閉事件
         function closeLightBox(e) {
             e.preventDefault();
-            document.body.classList.remove("wrapbkg")
+            document.body.classList.remove('wrapbkg')
             lightbox.classList.remove('open')
             time = maxTime; // Reset
             if (lightbox.dataset.openinmin) {  // 判斷有無寫入閒置時間且現在是否為燈箱開啟的狀態
