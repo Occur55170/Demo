@@ -317,7 +317,7 @@
     <!-- data-expiryDate請在雙引號中 按照格式填入倒數日期，西元年/月份/日期 -->
     <!-- data-expiryTime請在雙引號中 按照格式填入倒數時間，24小時/分鐘/秒數 -->
     <!-- data-openInMin請在雙引號中 按照格式填入頁面閒置時間(分鐘數)，如不需要此功能 請移除 data-openInMin="1"  -->
-    <div id="lightBox" class="lightBox" data-expiryDate="2022/12/16" data-expiryTime="23:59:15" data-openInMin="1">
+    <div id="lightBox" class="lightBox" data-expiryDate="2022/12/31" data-expiryTime="10:28:10" data-openInMin="1">
         <div class="lightContent">
             <a href="" class="closeLight" id="closeLight" onClick="closeLight">X</a>
             <!-- 內容head -->
@@ -655,48 +655,18 @@
     <script>
         var lightbox = document.getElementById('lightBox')
 
-          // 閒置計時器裝置
-          var timingLightBox
-          var maxTime = lightbox.dataset.openinmin * 60
-          var time = maxTime
+        // 閒置計時器裝置
+        var timingLightBox
+        var maxTime = lightbox.dataset.openinmin * 60
+        var time = maxTime
 
-        console.log('document: '+document.referrer)
-        console.log('localStorage: '+localStorage.getItem('prev_history'))
-
-        // 方法一:判定有沒有上一頁歷史紀錄 且上一頁紀錄跟存取的是否一樣(同不同網域)
         if (document.referrer !== '' && localStorage.getItem('prev_history') === document.referrer) {
             localStorage.setItem('prev_history', window.location.href)
-            time = maxTime
-            openTimingLightBox()
+            init()
         } else {
             localStorage.setItem('prev_history', window.location.href)
             init()
         }
-
-
-
-        var promise = new Promise(function(resolve, reject) {
-            var value = localStorage.getItem('final')
-            localStorage.setItem('final', window.location.href)
-            resolve(value)
-            reject(reason)
-        })
-
-        promise.then(
-            function(value) {
-                localStorage.setItem('final', window.location.href)
-                if(document.referrer !== '' && value === document.referrer){
-                    console.log('samePageIn')
-                } else {
-                    console.log('anthorPageIn')
-                }
-            },
-            function(reason) {
-                console.log('error', document.referrer, reason)
-            }
-        )
-
-
 
         // 第一次執行function
         function init() {
@@ -717,12 +687,8 @@
                 document.getElementById('Timer').innerHTML = '<span class="time day">' + daysGap + '</span> : <span class="time hour">' + hoursGap + '</span> : <span class="time min">' + minsGap + '</span> : <span class="time sec">' + secondsGap + '</span>'
                 timerSwitch = setInterval(countDownTime, 1000);  // 啟動計時器
                 openLightBox()  // 打開燈箱
-                if (lightbox.dataset.openinmin && !document.body.classList.contains('wrapbkg')) {  // 判斷有無寫入閒置時間且現在是否為燈箱開啟的狀態
-                    openTimingLightBox() //打開閒置計時器
-                }
             } else {
-                document.body.classList.remove('wrapbkg')
-                lightbox.classList.remove('open')
+                console.log("time's up")
             }
         }
 
@@ -745,9 +711,7 @@
             var allMinsGap = (allHoursGap - hoursGap) * 60
             var minsGap = Math.floor((allHoursGap - hoursGap) * 60)
             var secondsGap = Math.floor((allMinsGap - minsGap) * 60)
-
-            // 倒數畫面用
-            if (daysGap >= 0 && hoursGap >= 0 && minsGap >= 0 && secondsGap >= 0) {
+            if (daysGap >= 0 && hoursGap >= 0 && minsGap >= 0 && secondsGap > 0) {
                 if (daysGap < 10) { daysGap = '0' + daysGap }
                 if (hoursGap < 10) { hoursGap = '0' + hoursGap }
                 if (minsGap < 10) { minsGap = '0' + minsGap }
@@ -756,7 +720,8 @@
             } else {
                 document.body.classList.remove("wrapbkg")
                 lightbox.classList.remove('open')
-                clearInterval(timerSwitch);
+                clearInterval(timerSwitch)
+                console.log("time's up")
             }
         }
 
@@ -783,17 +748,17 @@
             }
         }
 
-          // 監聽 點擊灰色區塊關閉燈箱
-          document.body.addEventListener('click', function (e) {
-                if  (e.target.className == 'lightBox open')  {
-                      closeLightBox(e)
-                }
-          }, false)
-
-          // 監聽 點擊叉叉關閉燈箱
-          document.getElementById('closeLight').addEventListener('click', function (e) {
+        // 監聽 點擊灰色區塊關閉燈箱
+        document.body.addEventListener('click', function (e) {
+            if (e.target.className == 'lightBox open') {
                 closeLightBox(e)
-          }, false)
+            }
+        }, false)
+
+        // 監聽 點擊叉叉關閉燈箱
+        document.getElementById('closeLight').addEventListener('click', function (e) {
+            closeLightBox(e)
+        }, false)
 
         // 監聽 reset閒置計時器
         document.addEventListener('mousemove', function () {
