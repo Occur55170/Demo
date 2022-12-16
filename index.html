@@ -317,7 +317,7 @@
     <!-- data-expiryDate請在雙引號中 按照格式填入倒數日期，西元年/月份/日期 -->
     <!-- data-expiryTime請在雙引號中 按照格式填入倒數時間，24小時/分鐘/秒數 -->
     <!-- data-openInMin請在雙引號中 按照格式填入頁面閒置時間(分鐘數)，如不需要此功能 請移除 data-openInMin="1"  -->
-    <div id="lightBox" class="lightBox" data-expiryDate="2022/12/17" data-expiryTime="23:59:15" data-openInMin="0.1">
+    <div id="lightBox" class="lightBox" data-expiryDate="2022/12/16" data-expiryTime="20:23:24" data-openInMin="1">
         <div class="lightContent">
             <a href="" class="closeLight" id="closeLight" onClick="closeLight">X</a>
             <!-- 內容head -->
@@ -660,11 +660,9 @@
         var maxTime = lightbox.dataset.openinmin * 60
         var time = maxTime
 
-        // 方法一:判定有沒有上一頁歷史紀錄 且上一頁紀錄跟存取的是否一樣(同不同網域)
         if (document.referrer !== '' && localStorage.getItem('prev_history') === document.referrer) {
             localStorage.setItem('prev_history', window.location.href)
-            time = maxTime
-            openTimingLightBox()
+            notFirst()
         } else {
             localStorage.setItem('prev_history', window.location.href)
             openLightBox()
@@ -681,7 +679,7 @@
             var allMinsGap = (allHoursGap - hoursGap) * 60
             var minsGap = Math.floor((allHoursGap - hoursGap) * 60)
             var secondsGap = Math.floor((allMinsGap - minsGap) * 60)
-            if (daysGap >= 0 && hoursGap >= 0 && minsGap >= 0 && secondsGap > 0) {
+            if (daysGap >= 0 && hoursGap >= 0 && minsGap >= 0  && secondsGap >= 0) {
                 if (daysGap < 10) { daysGap = '0' + daysGap }
                 if (hoursGap < 10) { hoursGap = '0' + hoursGap }
                 if (minsGap < 10) { minsGap = '0' + minsGap }
@@ -690,10 +688,33 @@
                 timerSwitch = setInterval(countDownTime, 1000);  // 啟動計時器
                 openLightBox()  // 打開燈箱
             } else {
-                document.body.classList.remove('wrapbkg')
-                lightbox.classList.remove('open')
+                if(localStorage.getItem('prev_history')){localStorage.removeItem('prev_history')}
+                console.log("time's up")
             }
         }
+
+        function notFirst() {
+            var targetTime = new Date(lightbox.dataset.expirydate + ' ' + lightbox.dataset.expirytime).getTime()
+            var todayTime = new Date().getTime()
+            var allDaysGap = (targetTime - todayTime) / (24 * 60 * 60 * 1000)
+            var daysGap = Math.floor(allDaysGap)
+            var allHoursGap = (allDaysGap - daysGap) * 24
+            var hoursGap = Math.floor(allHoursGap)
+            var allMinsGap = (allHoursGap - hoursGap) * 60
+            var minsGap = Math.floor((allHoursGap - hoursGap) * 60)
+            var secondsGap = Math.floor((allMinsGap - minsGap) * 60)
+            if (daysGap >= 0 && hoursGap >= 0 && minsGap >= 0  && secondsGap >= 0) {
+                timerSwitch = setInterval(countDownTime, 1000);  // 啟動計時器
+                time = maxTime
+                if (lightbox.dataset.openinmin && !document.body.classList.contains('wrapbkg')) {  // 判斷有無寫入閒置時間且現在是否為燈箱開啟的狀態
+                    openTimingLightBox() //打開閒置計時器
+                }
+            } else {
+                if(localStorage.getItem('prev_history')){localStorage.removeItem('prev_history')}
+                console.log("time's up")
+            }
+        }
+
 
         function openLightBox() {
             var haveClassName = document.body.getAttribute('class')
@@ -706,8 +727,8 @@
         }
         // 倒數計時器
         function countDownTime() {
-            var targetTime = new Date(lightbox.dataset.expirydate + ' ' + lightbox.dataset.expirytime).getTime();
-            var todayTime = new Date().getTime();
+            var targetTime = new Date(lightbox.dataset.expirydate + ' ' + lightbox.dataset.expirytime).getTime()
+            var todayTime = new Date().getTime()
             var allDaysGap = (targetTime - todayTime) / (24 * 60 * 60 * 1000)
             var daysGap = Math.floor(allDaysGap)
             var allHoursGap = (allDaysGap - daysGap) * 24
@@ -715,8 +736,6 @@
             var allMinsGap = (allHoursGap - hoursGap) * 60
             var minsGap = Math.floor((allHoursGap - hoursGap) * 60)
             var secondsGap = Math.floor((allMinsGap - minsGap) * 60)
-
-            // 倒數畫面用
             if (daysGap >= 0 && hoursGap >= 0 && minsGap >= 0 && secondsGap >= 0) {
                 if (daysGap < 10) { daysGap = '0' + daysGap }
                 if (hoursGap < 10) { hoursGap = '0' + hoursGap }
@@ -726,7 +745,8 @@
             } else {
                 document.body.classList.remove("wrapbkg")
                 lightbox.classList.remove('open')
-                clearInterval(timerSwitch);
+                clearInterval(timerSwitch)
+                console.log("time's up")
             }
         }
 
@@ -745,7 +765,7 @@
         // 關閉事件
         function closeLightBox(e) {
             e.preventDefault();
-            document.body.classList.remove("wrapbkg")
+            document.body.classList.remove('wrapbkg')
             lightbox.classList.remove('open')
             time = maxTime; // Reset
             if (lightbox.dataset.openinmin) {  // 判斷有無寫入閒置時間且現在是否為燈箱開啟的狀態
